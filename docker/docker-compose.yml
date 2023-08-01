@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  webserver:
+    image: nginx:latest
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+    - "80:80"
+    - "443:443"
+    volumes:
+    - ./nginx/conf/sym-scrapper.conf:/etc/nginx/conf.d/default.conf
+    - ../app:/var/www
+    links:
+    - app
+    networks:
+    - app-network
+
+  app:
+    build:
+      context: ./php
+    container_name: app
+    working_dir: /var/www
+    volumes:
+    - ../app:/var/www
+    networks:
+    - app-network
+
+
+networks:
+  app-network:
+    driver: bridge
