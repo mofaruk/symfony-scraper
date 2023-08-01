@@ -24,9 +24,23 @@ services:
     working_dir: /var/www
     volumes:
     - ../app:/var/www
+    depends_on:
+    - mysql
     networks:
     - app-network
 
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: unless-stopped
+    env_file:
+    - ./mysql/.env
+    volumes:
+    - ./mysql/conf:/etc/mysql/conf.d
+    - ./mysql/data:/var/lib/mysql
+    - ./mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - app-network
 
 networks:
   app-network:
